@@ -1,9 +1,46 @@
 <script>
-    export default { 
+import axios from 'axios';
 
-       // add code here
+export default {
 
+    // add code here
+    data() {
+        return {
+            moods: ['happy', 'sad', 'angry'],
+            selMood: "",
+            subject: "",
+            entry: "",
+            outputMsg:''
+        }
+    },
+    computed: {
+        baseUrl() {
+            if (window.location.hostname=='localhost')
+                return 'http://localhost:3000' 
+            else {
+                const codespace_host = window.location.hostname.replace('5173', '3000')
+                return `https://${codespace_host}`;
+            }
+        }
+    },
+    methods:
+    {
+        addPost() {
+            axios.get(`${this.baseUrl}/addPost`, {
+                params: {
+                    'subject': this.subject,
+                    'entry': this.entry,
+                    'mood': this.selMood
+                }
+            }).then(response => {
+                this.outputMsg = response.data.message
+            }).catch((err) => {
+                console.log(err)
+                this.outputMsg = "Failed to add post.";
+            })
+        }
     }
+}
 </script>
 
 <template>
@@ -19,14 +56,18 @@
 
         Mood:
         <!-- TODO: Build a dropdown list here for selecting the mood -->
-
+        <select v-model="selMood" required>
+            <option v-for="mood in moods" :key="mood" :value="mood">
+                {{ mood }}
+            </option>
+        </select>
         <br>
 
         <br>
-        <button>Submit New Post</button>
+        <button @click="addPost">Submit New Post</button>
+        {{ outputMsg }}
 
-        <hr> Click  <a><router-link to="/ViewPosts/">here</router-link></a>  to return to Main Page
-       
+        <hr> Click <a><router-link to="/ViewPosts/">here</router-link></a> to return to Main Page
+
     </div>
 </template>
-
