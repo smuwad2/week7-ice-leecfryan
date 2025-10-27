@@ -22,7 +22,7 @@ export default {
                 case "/":
                     return this.y !== 0 ? this.x / this.y : 'Error';
                 case "%":
-                    return this.y % this.x;
+                    return this.x % this.y;
                 default:
                     return ''
             }
